@@ -18,6 +18,8 @@ public class WordAudioProcessorServiceImpl implements WordAudioProcessorService 
     @Override
     public void processUpdatingWordAudio(String key, String language, Long wordId) {
         final byte[] audio = audioService.getAudio(key, language, wordId);
-        wordModificationEventProducer.sendMessage(wordId, audio);
+        if (audio != null) {
+            wordModificationEventProducer.sendMessage(wordId, audio);
+        }
     }
 }

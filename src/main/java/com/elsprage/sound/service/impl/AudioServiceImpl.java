@@ -1,15 +1,15 @@
 package com.elsprage.sound.service.impl;
 
-import com.elsprage.sound.exception.AudioUrlNotFoundException;
-import com.elsprage.sound.exception.MissingAudioServiceException;
 import com.elsprage.sound.service.AudioService;
 import com.elsprage.sound.service.Mp3DownloaderService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class AudioServiceImpl implements AudioService {
 
     private final EnglishAudioServiceImpl englishAudioService;
@@ -21,10 +21,12 @@ public class AudioServiceImpl implements AudioService {
         if (language.equals("en")) {
             url = englishAudioService.getAudioUrl(key);
         } else {
-            throw new MissingAudioServiceException(language);
+            log.error("There is no audio service implementation for language: " + language);
+            return null;
         }
         if (StringUtils.isEmpty(url)) {
-            throw new AudioUrlNotFoundException();
+            log.error("Audio url not found");
+            return null;
         }
         return mp3DownloaderService.downloadMp3File(url);
     }
