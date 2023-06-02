@@ -19,8 +19,11 @@ public class WordModificationEventProducer {
 
     public void sendMessage(final Long wordId, byte[] audioFile) {
         log.info("Produce kafka message with audio update for word with id; {}", wordId);
-        final WordModificationEvent wordModificationEvent = new WordModificationEvent(wordId,
-                ByteBuffer.wrap(audioFile), WordModificationActionType.AUDIO_UPDATE);
+        final WordModificationEvent wordModificationEvent=WordModificationEvent.newBuilder()
+                .setAudioFile(ByteBuffer.wrap(audioFile))
+                .setWordId(wordId)
+                .setActionType(WordModificationActionType.AUDIO_UPDATE)
+                .build();
         kafkaTemplate.send(KafkaConstants.WORD_MODIFICATION_TOPIC, wordModificationEvent);
     }
 }
